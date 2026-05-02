@@ -1,0 +1,40 @@
+{
+  "name": "golazo-live",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "eas:build:android": "eas build --platform android --profile production",
+    "eas:submit:android": "eas submit --platform android --profile production",
+    "eas:build:android:local": "eas build --platform android --profile preview --local",
+    "android:debug:build": "npx expo prebuild --platform android --no-install && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-navigation/bottom-tabs": "^7.4.2",
+    "@react-navigation/native": "^7.1.14",
+    "@react-navigation/stack": "^7.4.2",
+    "@react-native-community/netinfo": "^11.3.3",
+    "@expo/vector-icons": "13.0.0",
+    "axios": "^1.11.0",
+    "expo": "53.0.20",
+    "expo-notifications": "~0.28.0",
+    "expo-status-bar": "~2.2.3",
+    "expo-updates": "~0.28.17",
+    "i18next": "^25.3.2",
+    "react": "19.0.0",
+    "react-i18next": "^15.6.0",
+    "react-native": "0.79.5",
+    "react-native-gesture-handler": "~2.24.0",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.11.1",
+    "react-native-svg": "15.11.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
+  },
+  "private": true
+}

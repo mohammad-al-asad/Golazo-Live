@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "Golazo Live",
+    "slug": "golazo-live",
+    "version": "1.0.3",
+    "orientation": "portrait",
+    "icon": "./assets/splash.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F0F0F"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "buildNumber": "6",
+      "bundleIdentifier": "com.golazo.live",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/splash.png",
+        "backgroundColor": "#0F0F0F"
+      },
+      "package": "com.golazo.live",
+      "edgeToEdgeEnabled": true,
+      "versionCode": 12,
+      "permissions": [
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/splash.png"
+    },
+    "plugins": [
+      "expo-updates"
+    ],
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/59b38426-e039-4780-851b-adf6a92751f6"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5e68a1f5-4732-49d8-8990-1ecdf3d8778d"
+      }
+    }
+  }
+}
