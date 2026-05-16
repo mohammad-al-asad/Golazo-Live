@@ -31,7 +31,7 @@ export const LEAGUES = [
   { key: 'aut-bundesliga', id: 218, name: 'Austrian Bundesliga',   flag: '🇦🇹', logo: 'https://media.api-sports.io/football/leagues/218.png' },
 
   // World cups
-  { key: 'world-cup',      id: 1,   name: 'FIFA World Cup',        flag: '🏆', category: 'international', season: 2022, logo: 'https://media.api-sports.io/football/leagues/1.png' },
+  { key: 'world-cup',      id: 1,   name: 'FIFA World Cup',        flag: '🏆', category: 'international', season: 2026, logo: 'https://media.api-sports.io/football/leagues/1.png' },
   { key: 'club-world-cup', id: 15,  name: 'FIFA Club World Cup',   flag: '🌍', logo: 'https://media.api-sports.io/football/leagues/15.png' },
 
   // International tournaments
@@ -42,6 +42,6 @@ export const LEAGUES = [
   { key: 'copa-america-2024',       id: 9,    name: 'Copa America 2024',          flag: '🌎', category: 'international', season: 2024, logo: 'https://media.api-sports.io/football/leagues/9.png' },
 ];
 
-// Include 2022 for World Cup, 2023 for Asian Cup, keep ordering newest first for fetch priority
+// Keep global seasons for competitions without an explicit season; tournaments above can override this.
 export const SEASONS = [2025, 2024, 2023, 2022]; // fetch 2025 first, then 2024, then 2023, then 2022
 export const DEFAULT_TIMEZONE = 'UTC';
