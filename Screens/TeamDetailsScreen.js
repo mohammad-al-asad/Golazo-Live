@@ -195,18 +195,28 @@ const TeamDetailsScreen = ({ route }) => {
         };
       });
 
+      // Find the group containing this team (since standings is now a 2D array of groups)
+      let teamGroup = [];
+      if (Array.isArray(standings) && standings.length > 0) {
+        const found = standings.find(group => 
+          Array.isArray(group) && group.some(row => row?.team?.id === teamId)
+        );
+        teamGroup = found || standings[0] || [];
+      }
+
       // League table mapping for TeamTable component
-      const tableMapped = standings.map((r, idx) => ({
+      const tableMapped = teamGroup.map((r, idx) => ({
         pos: r.rank || idx+1,
         club: r.team?.name,
-  teamId: r.team?.id,
-  teamLogo: r.team?.logo,
+        teamId: r.team?.id,
+        teamLogo: r.team?.logo,
         pl: r.all?.played,
         w: r.all?.win,
         d: r.all?.draw,
         l: r.all?.lose,
         gd: (r.goalsDiff != null ? r.goalsDiff : (r.all?.goals?.for - r.all?.goals?.against)),
         pts: r.points,
+        groupName: r.group,
       }));
 
       // Group players by position for squad

@@ -252,20 +252,9 @@ export async function fetchFixtureById(fixtureId, timezone = 'UTC', signal) {
 export async function fetchStandings(leagueId, season, signal) {
   try {
     const rows = await getWithCache('/standings', { league: leagueId, season }, { ttl: STANDINGS_TTL, signal });
-    const table = rows?.[0]?.league?.standings?.[0] || [];
-    console.log(`[DEBUG] fetchStandings(${leagueId}, ${season}): ${table?.length || 0} standings found`);
-    
-    // For tournaments, sometimes standings are in different format or don't exist until later stages
-    if (!table.length && rows?.[0]?.league?.standings?.length > 1) {
-      // Try to get first available standings group (tournaments may have multiple groups)
-      const firstGroup = rows[0].league.standings.find(group => group && group.length > 0);
-      if (firstGroup) {
-        console.log(`[DEBUG] Using alternative standings group with ${firstGroup.length} teams`);
-        return firstGroup;
-      }
-    }
-    
-    return table;
+    const standings = rows?.[0]?.league?.standings || [];
+    console.log(`[DEBUG] fetchStandings(${leagueId}, ${season}): ${standings?.length || 0} groups found`);
+    return standings;
   } catch (e) {
     console.error(`[DEBUG] fetchStandings error for ${leagueId}:`, e.message);
     throw e;

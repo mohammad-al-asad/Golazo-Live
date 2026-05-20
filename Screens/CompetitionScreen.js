@@ -54,8 +54,9 @@ const CompetitionMainScreen = ({ route }) => {
           const fb = await fetchStandingsWithFallback(leagueId, [season, ...SEASONS.filter(s=>s!==season)], controller.signal);
           table = fb.table;
         }
-        // Derive matchweek approximation from most played games among top teams
-        const maxPlayed = table.reduce((m, r) => Math.max(m, r.played || r.all?.played || 0), 0);
+        // Derive matchweek approximation from most played games among top teams (flatten table since it's a 2D array of groups)
+        const flatTable = table.flat();
+        const maxPlayed = flatTable.reduce((m, r) => Math.max(m, r.played || r.all?.played || 0), 0);
         if (mounted) {
           setCompetitionData(prev => ({
             id: leagueId,

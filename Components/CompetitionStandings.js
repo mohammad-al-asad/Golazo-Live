@@ -10,7 +10,8 @@ const CompetitionStandings = ({ competitionData }) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [table, setTable] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const season = competitionData?.season || SEASONS[0];
   const leagueId = competitionData?.id;
 
@@ -18,22 +19,30 @@ const CompetitionStandings = ({ competitionData }) => {
     if(!leagueId) return;
     if(!opts.silent) setLoading(true);
     try {
-      const rows = await fetchStandings(leagueId, season);
-      const mapped = rows.map((r, idx) => ({
-        pos: r.rank || idx+1,
-        club: r.team?.name,
-        teamId: r.team?.id,
-        teamLogo: r.team?.logo,
-        pl: r.all?.played,
-        w: r.all?.win,
-        d: r.all?.draw,
-        l: r.all?.lose,
-        gd: (r.goalsDiff != null ? r.goalsDiff : (r.all?.goals?.for - r.all?.goals?.against)),
-        pts: r.points,
-      }));
-      setTable(mapped);
+      const allGroups = await fetchStandings(leagueId, season);
+      const mappedGroups = (allGroups || []).map((group) => {
+        const groupName = group?.[0]?.group || '';
+        const table = group.map((r, idx) => ({
+          pos: r.rank || idx+1,
+          club: r.team?.name,
+          teamId: r.team?.id,
+          teamLogo: r.team?.logo,
+          pl: r.all?.played,
+          w: r.all?.win,
+          d: r.all?.draw,
+          l: r.all?.lose,
+          gd: (r.goalsDiff != null ? r.goalsDiff : (r.all?.goals?.for - r.all?.goals?.against)),
+          pts: r.points,
+        }));
+        return { name: groupName, table };
+      }).filter(g => g.table.length > 0);
+
+      setGroups(mappedGroups);
+      if (mappedGroups.length > 0) {
+        setActiveGroupIndex(prev => prev < mappedGroups.length ? prev : 0);
+      }
     } catch(e) {
-      setTable([]);
+      setGroups([]);
     } finally { setLoading(false);} };
 
   const debounceRef = useRef(null);
@@ -73,8 +82,32 @@ const CompetitionStandings = ({ competitionData }) => {
     });
   };
 
+  const currentGroup = groups[activeGroupIndex] || { name: '', table: [] };
+  const table = currentGroup.table;
+
   return (
     <View style={styles.container}>
+      {!loading && groups.length > 1 && (
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          contentContainerStyle={styles.groupsContainer}
+        >
+          {groups.map((group, index) => (
+            <TouchableOpacity
+              key={group.name || index}
+              style={[styles.groupPill, activeGroupIndex === index && styles.activeGroupPill]}
+              onPress={() => setActiveGroupIndex(index)}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.groupPillText, activeGroupIndex === index && styles.activeGroupPillText]}>
+                {group.name || `Group ${index + 1}`}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
+
       <View style={styles.headerRow}>
         <Text style={styles.headerCell}>#</Text>
         <Text style={[styles.headerCell, { flex: 3 }]}>Club</Text>
@@ -202,6 +235,35 @@ const styles = StyleSheet.create({
     color: '#cccccc',
     fontSize: 12,
     marginRight: 12,
+  },
+  groupsContainer: {
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    marginBottom: 10,
+  },
+  groupPill: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 16,
+    backgroundColor: '#222',
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#333',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeGroupPill: {
+    backgroundColor: 'rgba(34, 197, 94, 0.15)',
+    borderColor: '#22C55E',
+  },
+  groupPillText: {
+    color: '#aaa',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  activeGroupPillText: {
+    color: '#22C55E',
+    fontWeight: 'bold',
   },
 });
 

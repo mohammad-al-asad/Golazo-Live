@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "12",
+      "buildNumber": "13",
       "bundleIdentifier": "com.golazo.live",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -29,7 +29,7 @@
       },
       "package": "com.golazo.live",
       "edgeToEdgeEnabled": true,
-      "versionCode": 15,
+      "versionCode": 16,
       "permissions": [
         "POST_NOTIFICATIONS"
       ]

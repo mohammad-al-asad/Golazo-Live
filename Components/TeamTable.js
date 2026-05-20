@@ -36,8 +36,13 @@ const TeamTable = ({ teamData }) => {
     });
   };
 
+  const groupName = teamData.standings?.[0]?.groupName;
+
   return (
     <View style={styles.container}>
+      {groupName ? (
+        <Text style={styles.groupTitle}>{groupName}</Text>
+      ) : null}
       <View style={styles.headerRow}>
         <Text style={styles.headerCell}>#</Text>
         <Text style={[styles.headerCell, { flex: 3 }]}>Club</Text>
@@ -80,6 +85,14 @@ const TeamTable = ({ teamData }) => {
 };
 
 const styles = StyleSheet.create({
+  groupTitle: {
+    color: '#22C55E',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
   container: {
     backgroundColor: '#181A20',
     borderRadius: 12,

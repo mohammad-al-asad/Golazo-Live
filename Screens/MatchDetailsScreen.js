@@ -254,7 +254,7 @@ export default function MatchDetailsScreen() {
               awayName={match.away.name}
             />
           )}
-          {activeTab === 'Standings' && <Standings standings={standings} />}
+          {activeTab === 'Standings' && <Standings standings={standings} teamId={match?.home?.id} />}
           {activeTab === 'Form' && (
             <Form
               form={form}
