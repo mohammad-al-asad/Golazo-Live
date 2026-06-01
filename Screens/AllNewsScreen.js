@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Image, Dimensions, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Image, Dimensions, ActivityIndicator, RefreshControl, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { getFootballNews } from '../Utils/newsApi';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -12,6 +13,14 @@ const getResponsiveFontSize = (size) => {
   const scale = screenWidth / 375;
   return Math.round(size * scale);
 };
+
+const NEWS_AD_UNIT_ID = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : Platform.select({
+      ios: process.env.EXPO_PUBLIC_IOS_NEWS_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER,
+      android: process.env.EXPO_PUBLIC_ANDROID_NEWS_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER,
+      default: TestIds.ADAPTIVE_BANNER,
+    });
 
 const AllNewsScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -100,31 +109,42 @@ const AllNewsScreen = ({ route }) => {
         }}
       >
         <View style={styles.newsContainer}>
-      {articles.map((newsItem, idx) => (
-            <TouchableOpacity
-        // Key: ensure uniqueness even if backend sends duplicates
-        key={newsItem.id || `fallback-${idx}`}
-              style={styles.newsCard}
-              onPress={() => handleNewsPress(newsItem)}
-              activeOpacity={0.9}
-            >
-              {newsItem.image ? <Image source={newsItem.image} style={styles.newsImage} /> : <View style={[styles.newsImage,{justifyContent:'center',alignItems:'center'}]}><Text style={{color:'#666'}}>No Image</Text></View>}
-              <View style={styles.newsContent}>
-                <View style={styles.categoryContainer}>
-                  <Text style={styles.categoryText}>{t(newsItem.category)}</Text>
+          {articles.map((newsItem, idx) => (
+            <React.Fragment key={newsItem.id || `fallback-${idx}`}>
+              <TouchableOpacity
+                style={styles.newsCard}
+                onPress={() => handleNewsPress(newsItem)}
+                activeOpacity={0.9}
+              >
+                {newsItem.image ? <Image source={newsItem.image} style={styles.newsImage} /> : <View style={[styles.newsImage,{justifyContent:'center',alignItems:'center'}]}><Text style={{color:'#666'}}>No Image</Text></View>}
+                <View style={styles.newsContent}>
+                  <View style={styles.categoryContainer}>
+                    <Text style={styles.categoryText}>{t(newsItem.category)}</Text>
+                  </View>
+                  <Text style={styles.newsTitle} numberOfLines={2}>
+                    {newsItem.title}
+                  </Text>
+                  <Text style={styles.newsDescription} numberOfLines={3}>
+                    {newsItem.description}
+                  </Text>
+                  <View style={styles.newsFooter}>
+                    <Text style={styles.newsAuthor}>{newsItem.author}</Text>
+                    <Text style={styles.newsDate}>{newsItem.publishedDate}</Text>
+                  </View>
                 </View>
-                <Text style={styles.newsTitle} numberOfLines={2}>
-                  {newsItem.title}
-                </Text>
-                <Text style={styles.newsDescription} numberOfLines={3}>
-                  {newsItem.description}
-                </Text>
-                <View style={styles.newsFooter}>
-                  <Text style={styles.newsAuthor}>{newsItem.author}</Text>
-                  <Text style={styles.newsDate}>{newsItem.publishedDate}</Text>
+              </TouchableOpacity>
+              {(idx + 1) % 3 === 0 && (
+                <View style={styles.adCard}>
+                  <BannerAd
+                    unitId={NEWS_AD_UNIT_ID}
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                      requestNonPersonalizedAdsOnly: true,
+                    }}
+                  />
                 </View>
-              </View>
-            </TouchableOpacity>
+              )}
+            </React.Fragment>
           ))}
           {loading && <ActivityIndicator style={{marginVertical:24}} color="#22C55E" />}
           {error && !articles.length && <Text style={{color:'#fff', textAlign:'center', marginVertical:16}}>Failed to load news: {error}</Text>}
@@ -182,6 +202,23 @@ const styles = StyleSheet.create({
     borderRadius: getResponsiveWidth(4),
     marginBottom: getResponsiveHeight(5),
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  adCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: getResponsiveWidth(4),
+    marginBottom: getResponsiveHeight(5),
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

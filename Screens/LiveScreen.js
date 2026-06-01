@@ -2,6 +2,7 @@ import React, { useState, useMemo, useRef, useEffect, useCallback, memo } from '
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Platform, StatusBar, ActivityIndicator, RefreshControl, Animated, Dimensions, SectionList } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { LEAGUES, SEASONS, DEFAULT_TIMEZONE } from '../Config/leagues';
@@ -20,6 +21,14 @@ const Stack = createStackNavigator();
 // Date range constants
 const PAST_DAYS = 3;
 const FUTURE_DAYS = 10;
+
+const SCORE_AD_UNIT_ID = __DEV__
+  ? TestIds.BANNER
+  : Platform.select({
+      ios: process.env.EXPO_PUBLIC_IOS_SCORE_BANNER_AD_UNIT_ID || TestIds.BANNER,
+      android: process.env.EXPO_PUBLIC_ANDROID_SCORE_BANNER_AD_UNIT_ID || TestIds.BANNER,
+      default: TestIds.BANNER,
+    });
 
 function buildDates() {
   const arr = [];
@@ -284,49 +293,84 @@ function LiveTab() {
   });
 
   // Prepare sections for SectionList to enable virtualization
-  const sections = useMemo(() => groupedMatches.map(g => ({
-    leagueId: g.leagueId,
-    leagueName: g.leagueName,
-    leagueLogo: g.leagueLogo,
-    flag: g.flag,
-    data: g.matches,
-  })), [groupedMatches]);
+  const sections = useMemo(() => {
+    const list = groupedMatches.map(g => ({
+      leagueId: g.leagueId,
+      leagueName: g.leagueName,
+      leagueLogo: g.leagueLogo,
+      flag: g.flag,
+      isAd: false,
+      data: g.matches,
+    }));
 
-  const renderMatchItem = useCallback(({ item }) => (
-    <MatchCard match={item} />
-  ), []);
+    if (list.length >= 2) {
+      list.splice(2, 0, {
+        leagueId: 'ad-section',
+        isAd: true,
+        data: [{ id: 'ad-item' }],
+      });
+    } else if (list.length > 0) {
+      list.push({
+        leagueId: 'ad-section',
+        isAd: true,
+        data: [{ id: 'ad-item' }],
+      });
+    }
 
-  const renderSectionHeader = useCallback(({ section }) => (
-    <View style={styles.leagueSection}>
-      <TouchableOpacity
-        style={styles.leagueHeader}
-        onPress={() => navigation.navigate('CompetitionScreen', {
-          leagueId: section.leagueId,
-          leagueName: section.leagueName,
-          flag: section.flag,
-        })}
-        activeOpacity={0.7}
-      >
-        <View style={styles.leagueInfo}>
-          <Text style={styles.leagueFlag}>{section.flag}</Text>
-          <RemoteLogo
-            kind="league"
-            leagueId={section.leagueId}
-            leagueName={section.leagueName}
-            logoUrl={section.leagueLogo}
-            size={rs(20)}
-            style={{ marginRight: wp(2) }}
+    return list;
+  }, [groupedMatches]);
+
+  const renderMatchItem = useCallback(({ item, section }) => {
+    if (section.isAd) {
+      return (
+        <View style={styles.adCard}>
+          <BannerAd
+            unitId={SCORE_AD_UNIT_ID}
+            size={BannerAdSize.MEDIUM_RECTANGLE}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
           />
-          <Text style={styles.leagueName} numberOfLines={1}>
-            {section.leagueName}
-          </Text>
         </View>
-        <Text style={styles.matchCount}>
-          {section.data.length} match{section.data.length !== 1 ? 'es' : ''}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  ), [navigation]);
+      );
+    }
+    return <MatchCard match={item} />;
+  }, []);
+
+  const renderSectionHeader = useCallback(({ section }) => {
+    if (section.isAd) return null;
+    return (
+      <View style={styles.leagueSection}>
+        <TouchableOpacity
+          style={styles.leagueHeader}
+          onPress={() => navigation.navigate('CompetitionScreen', {
+            leagueId: section.leagueId,
+            leagueName: section.leagueName,
+            flag: section.flag,
+          })}
+          activeOpacity={0.7}
+        >
+          <View style={styles.leagueInfo}>
+            <Text style={styles.leagueFlag}>{section.flag}</Text>
+            <RemoteLogo
+              kind="league"
+              leagueId={section.leagueId}
+              leagueName={section.leagueName}
+              logoUrl={section.leagueLogo}
+              size={rs(20)}
+              style={{ marginRight: wp(2) }}
+            />
+            <Text style={styles.leagueName} numberOfLines={1}>
+              {section.leagueName}
+            </Text>
+          </View>
+          <Text style={styles.matchCount}>
+            {section.data.length} match{section.data.length !== 1 ? 'es' : ''}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -655,6 +699,24 @@ const styles = StyleSheet.create({
     marginBottom: hp(1),
     borderWidth: 1,
     borderColor: '#232323',
+  },
+  adCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: rs(14),
+    paddingVertical: hp(2),
+    paddingHorizontal: wp(3.6),
+    marginBottom: hp(2.5),
+    marginHorizontal: wp(4),
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   teamsRow: { 
     flexDirection: 'row', 

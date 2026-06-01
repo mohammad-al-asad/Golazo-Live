@@ -1,6 +1,6 @@
 {
   "name": "golazo-live",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "index.js",
   "scripts": {
     "start": "expo start",
@@ -13,6 +13,7 @@
     "android:debug:build": "npx expo prebuild --platform android --no-install && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
+    "@expo/config-plugins": "^56.0.7",
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/netinfo": "11.5.2",
@@ -29,6 +30,7 @@
     "react-i18next": "^15.6.0",
     "react-native": "0.83.6",
     "react-native-gesture-handler": "~2.30.0",
+    "react-native-google-mobile-ads": "^16.3.3",
     "react-native-safe-area-context": "~5.6.2",
     "react-native-screens": "~4.23.0",
     "react-native-svg": "15.15.3"
