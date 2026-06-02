@@ -8,6 +8,8 @@ import { preWarmLogos } from './RemoteLogo';
 import RemoteLogo from './RemoteLogo';
 import { smartDataManager } from '../Utils/smartDataManager';
 
+import { getLocalDateString } from '../Utils/dateHelpers';
+
 const MAX_CARDS = 20;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ITEM_GAP = wp(3.6);
@@ -97,7 +99,7 @@ const LiveNow = ({ showSeeAll = true, refreshKey = 0 }) => {
   const dateStr = useCallback((offset) => {
     const d = new Date();
     d.setDate(d.getDate() + offset);
-    return d.toISOString().slice(0, 10);
+    return getLocalDateString(d);
   }, []);
 
   const mergeAndPublish = useCallback((incoming) => {

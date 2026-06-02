@@ -15,6 +15,7 @@ import GolazoLiveScreen from './GolazoLiveScreen';
 import CompetitionScreen from './CompetitionScreen';
 import TeamDetailsScreen from './TeamDetailsScreen';
 import { wp, hp, rs } from '../Utils/responsive';
+import { getLocalDateString, parseLocalDate } from '../Utils/dateHelpers';
 
 const Stack = createStackNavigator();
 
@@ -36,7 +37,7 @@ function buildDates() {
     const d = new Date();
     d.setDate(d.getDate() + i);
     arr.push({
-      key: d.toISOString().slice(0, 10),
+      key: getLocalDateString(d),
       offset: i,
       label: d.toLocaleDateString([], { weekday: 'short', day: 'numeric' }),
     });
@@ -62,7 +63,7 @@ function LiveTab() {
   };
 
   const DATES = useMemo(buildDates, []);
-  const todayKey = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const todayKey = useMemo(() => getLocalDateString(), []);
   const [selectedDate, setSelectedDate] = useState(todayKey);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,25 +132,24 @@ function LiveTab() {
   }, [selectedDate, fetchMatches]);
 
   const shiftDay = useCallback((delta) => {
-    const d = new Date(selectedDate);
+    const d = parseLocalDate(selectedDate);
     d.setDate(d.getDate() + delta);
-    setSelectedDate(d.toISOString().slice(0,10));
+    setSelectedDate(getLocalDateString(d));
   }, [selectedDate]);
 
   const onSelectDate = useCallback((key) => setSelectedDate(key), []);
 
   const dateWindow = useMemo(() => {
-    const baseDate = new Date(selectedDate);
-    const baseTime = baseDate.getTime();
+    const baseDate = parseLocalDate(selectedDate);
     const arr = [];
     
     for (let i = -WINDOW_RADIUS; i <= WINDOW_RADIUS; i++) {
-      const dayTime = baseTime + (i * 24 * 60 * 60 * 1000);
-      const d = new Date(dayTime);
-      const key = d.toISOString().slice(0, 10);
-  // compact label to reduce layout computation for small window
-  const label = key === todayKey ? 'Today' : `${d.toLocaleDateString([], { weekday: 'short' })} ${d.getDate()}`;
-  arr.push({ key, offset: i, label });
+      const d = new Date(baseDate);
+      d.setDate(d.getDate() + i);
+      const key = getLocalDateString(d);
+      // compact label to reduce layout computation for small window
+      const label = key === todayKey ? 'Today' : `${d.toLocaleDateString([], { weekday: 'short' })} ${d.getDate()}`;
+      arr.push({ key, offset: i, label });
     }
     return arr;
   }, [selectedDate, todayKey]);
