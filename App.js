@@ -2,7 +2,7 @@ import './i18n';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, ActivityIndicator, SafeAreaView, Alert, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import mobileAds, { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+import mobileAds from 'react-native-google-mobile-ads';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import Onboarding from './Screens/Onboarding';
@@ -17,17 +17,10 @@ import { AppState } from 'react-native';
 import { showToast } from './Utils/toast';
 import { scheduleTwiceDailyRandomNews, rescheduleForTomorrowIfNeeded, ensureNotificationPermission } from './Utils/notifications';
 
-const AD_UNIT_ID = __DEV__
-  ? TestIds.ADAPTIVE_BANNER
-  : Platform.select({
-      ios: process.env.EXPO_PUBLIC_IOS_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER,
-      android: process.env.EXPO_PUBLIC_ANDROID_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER,
-      default: TestIds.ADAPTIVE_BANNER,
-    });
-
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
+
 
   useEffect(() => {
     // Initialize Google Mobile Ads SDK
@@ -213,15 +206,6 @@ export default function App() {
       <NavigationContainer>
         <View style={styles.mainContainer}>
           <TabNavigator />
-          <View style={styles.adContainer}>
-            <BannerAd
-              unitId={AD_UNIT_ID}
-              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-              requestOptions={{
-                requestNonPersonalizedAdsOnly: true,
-              }}
-            />
-          </View>
         </View>
         <StatusBar style="light" />
       </NavigationContainer>
@@ -239,12 +223,5 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: '#000000',
-  },
-  adContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#1a1a1a',
-    width: '100%',
-    paddingBottom: 2,
   },
 });
