@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { LEAGUES } from '../Config/leagues';
@@ -14,6 +14,7 @@ const buildInitialCompetitions = () => {
     name: l.name,
     flag: l.flag,
     logo: l.logo,
+    localLogo: l.localLogo || null,
     favorite: false,
     category: l.category || 'league',
     season: l.season || null,
@@ -114,7 +115,11 @@ const Competition = () => {
                 onPress={() => openCompetition(comp)}
                 activeOpacity={0.8}
               >
-                <RemoteLogo kind="league" leagueId={comp.id} leagueName={comp.name} logoUrl={comp.logo} size={42} style={{ marginBottom: 6 }} />
+                {comp.localLogo ? (
+                  <Image source={comp.localLogo} style={{ width: 42, height: 42, marginBottom: 6 }} resizeMode="contain" />
+                ) : (
+                  <RemoteLogo kind="league" leagueId={comp.id} leagueName={comp.name} logoUrl={comp.logo} size={42} style={{ marginBottom: 6 }} />
+                )}
                 <Text style={styles.name} numberOfLines={2}>{t(comp.name) || comp.name}</Text>
                 <Text style={styles.countryFlag}>{comp.flag}</Text>
               </TouchableOpacity>
@@ -145,7 +150,11 @@ const Competition = () => {
                     onPress={() => openCompetition(comp)}
                     activeOpacity={0.8}
                   >
-                    <RemoteLogo kind="league" leagueId={comp.id} leagueName={comp.name} logoUrl={comp.logo} size={42} style={{ marginBottom: 6 }} />
+                    {comp.localLogo ? (
+                      <Image source={comp.localLogo} style={{ width: 42, height: 42, marginBottom: 6 }} resizeMode="contain" />
+                    ) : (
+                      <RemoteLogo kind="league" leagueId={comp.id} leagueName={comp.name} logoUrl={comp.logo} size={42} style={{ marginBottom: 6 }} />
+                    )}
                     <Text style={styles.name} numberOfLines={2}>{t(comp.name) || comp.name}</Text>
                     <Text style={styles.countryFlag}>{comp.flag}</Text>
                   </TouchableOpacity>
