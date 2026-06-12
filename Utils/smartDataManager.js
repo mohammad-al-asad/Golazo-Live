@@ -288,6 +288,19 @@ class SmartDataManager {
       } else {
         console.log('[SmartDataManager] ⏳ Skipping prefetch during startupPhase');
       }
+
+      // Schedule kickoff notifications for cached data in case they aren't scheduled yet
+      if (cached.data && cached.data.length > 0) {
+        try {
+          const { scheduleKickoffNotifications } = require('./notifications');
+          scheduleKickoffNotifications(cached.data).catch(e => {
+            console.warn('[SmartDataManager] Error scheduling kickoff notifications from cache:', e);
+          });
+        } catch (e) {
+          console.warn('[SmartDataManager] Failed to import/run scheduleKickoffNotifications from cache:', e);
+        }
+      }
+
       return {
         data: cached.data,
         loading: false,
@@ -395,7 +408,19 @@ class SmartDataManager {
     const mapFixtureToCard = require('./apiFootball').mapFixtureToCard;
     
     const deduped = dedupeFixtures(rows);
-    return deduped.map(mapFixtureToCard);
+    const mapped = deduped.map(mapFixtureToCard);
+
+    // Schedule kickoff notifications
+    try {
+      const { scheduleKickoffNotifications } = require('./notifications');
+      scheduleKickoffNotifications(mapped).catch(e => {
+        console.warn('[SmartDataManager] Error scheduling kickoff notifications:', e);
+      });
+    } catch (e) {
+      console.warn('[SmartDataManager] Failed to import/run scheduleKickoffNotifications:', e);
+    }
+
+    return mapped;
   }
 
   // Smart prefetching around a target date
