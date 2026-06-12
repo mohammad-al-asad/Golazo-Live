@@ -43,6 +43,12 @@ export function initNotificationListeners(navigationRef) {
         screen: 'NewsDetailScreen',
         params: { newsItem: article },
       });
+    } else if (data?.fixtureId && navigationRef?.isReady()) {
+      // Navigate to Match Details
+      navigationRef.navigate('Live', {
+        screen: 'MatchDetailsScreen',
+        params: { fixtureId: data.fixtureId, leagueId: data.leagueId },
+      });
     }
   });
 }
@@ -115,7 +121,10 @@ export async function scheduleTwiceDailyRandomNews() {
         body: content.body,
         data: content.data,
       },
-      trigger: { date: when },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+        date: when,
+      },
     });
   }
   await AsyncStorage.setItem(SCHEDULED_KEY, '1');
@@ -132,5 +141,52 @@ export async function rescheduleForTomorrowIfNeeded() {
     // New day: allow re-scheduling
     await AsyncStorage.removeItem(SCHEDULED_KEY);
     await AsyncStorage.setItem(key, dayStr);
+  }
+}
+
+export async function scheduleKickoffNotifications(matches) {
+  try {
+    const hasPerm = await ensureNotificationPermission();
+    if (!hasPerm) return;
+
+    const now = Date.now();
+    
+    // Filter matches that are scheduled to start in the future (within next 24 hours)
+    const upcomingMatches = (matches || []).filter(match => {
+      if (!match || !match.id || !match.date) return false;
+      const matchTime = new Date(match.date).getTime();
+      return match.statusShort === 'NS' && matchTime > now && matchTime - now < 24 * 60 * 60 * 1000;
+    });
+
+    if (upcomingMatches.length === 0) return;
+
+    // Sort by date and limit to 50 to avoid OS limits (iOS has a max limit of 64 scheduled notifications)
+    const toSchedule = upcomingMatches
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(0, 50);
+
+    for (const match of toSchedule) {
+      const matchTime = new Date(match.date);
+      const identifier = `kickoff_${match.id}`;
+      
+      await Notifications.scheduleNotificationAsync({
+        identifier,
+        content: {
+          title: 'Golazo Live - Match Starting!',
+          body: `⚽ ${match.home.name} vs ${match.away.name} is kicking off now!`,
+          data: {
+            fixtureId: match.id,
+            leagueId: match.leagueId,
+          },
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date: matchTime,
+        },
+      });
+    }
+    console.log(`[notifications] Successfully scheduled kickoff notifications for ${toSchedule.length} upcoming matches.`);
+  } catch (e) {
+    console.warn('[notifications] Failed to schedule kickoff notifications:', e);
   }
 }

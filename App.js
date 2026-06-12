@@ -15,7 +15,8 @@ import { fetchTeamsByLeague, fetchLeagueLogo } from './Utils/apiFootball';
 import { preWarmLogos } from './Components/RemoteLogo';
 import { AppState } from 'react-native';
 import { showToast } from './Utils/toast';
-import { scheduleTwiceDailyRandomNews, rescheduleForTomorrowIfNeeded, ensureNotificationPermission } from './Utils/notifications';
+import { scheduleTwiceDailyRandomNews, rescheduleForTomorrowIfNeeded, ensureNotificationPermission, initNotificationListeners } from './Utils/notifications';
+import { navigationRef } from './Navigation/navigationRef';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +41,10 @@ export default function App() {
       console.log('[ENV] EXPO_PUBLIC_NEWS_API_KEY loaded:', Boolean(process.env.EXPO_PUBLIC_NEWS_API_KEY));
       console.log('[ENV] EXPO_PUBLIC_FOOTBALL_API_KEY loaded:', Boolean(process.env.EXPO_PUBLIC_FOOTBALL_API_KEY));
     } catch (e) {}
+    
+    // Initialize notification listeners with global navigation ref
+    initNotificationListeners(navigationRef);
+
     // Notification scheduling + Android 13 permission flow
     (async () => {
       try {
@@ -203,7 +208,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <View style={styles.mainContainer}>
           <TabNavigator />
         </View>
