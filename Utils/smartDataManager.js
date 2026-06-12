@@ -2,6 +2,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchFixturesBulk } from './apiFootball';
 import { LEAGUES, DEFAULT_TIMEZONE } from '../Config/leagues';
+import { getLocalDateString, parseLocalDate } from './dateHelpers';
 
 class SmartDataManager {
   constructor() {
@@ -193,7 +194,7 @@ class SmartDataManager {
 
   // === TODAY & OTHERS SYNC MODEL ===
   async ensureTodayFresh() {
-    const todayKey = new Date().toISOString().slice(0, 10);
+    const todayKey = getLocalDateString();
     const cacheKey = `${todayKey}:all`;
     const cached = this.cache.get(cacheKey);
 
@@ -235,13 +236,13 @@ class SmartDataManager {
   async runOthersSync() {
     if (!this.isInitialized) return;
     console.log('[SmartDataManager] 🔄 Others sync start (±2 days excluding today)');
-    const todayKey = new Date().toISOString().slice(0, 10);
+    const todayKey = getLocalDateString();
     const targets = [];
     for (let i = -2; i <= 2; i++) {
       if (i === 0) continue; // skip today (today handled separately)
       const d = new Date();
       d.setDate(d.getDate() + i);
-      targets.push(d.toISOString().slice(0, 10));
+      targets.push(getLocalDateString(d));
     }
     for (const date of targets) {
       try {
@@ -455,7 +456,7 @@ class SmartDataManager {
   // Generate dates for prefetching
   generatePrefetchDates(targetDate) {
     const dates = [];
-    const baseDate = new Date(targetDate);
+    const baseDate = parseLocalDate(targetDate);
     
     // Add dates in priority order: target, ±1, ±2, ±3, etc.
     for (let offset = 0; offset <= this.PREFETCH_RADIUS; offset++) {
@@ -465,12 +466,12 @@ class SmartDataManager {
         // Add future date
         const futureDate = new Date(baseDate);
         futureDate.setDate(futureDate.getDate() + offset);
-        dates.push(futureDate.toISOString().slice(0, 10));
+        dates.push(getLocalDateString(futureDate));
         
         // Add past date
         const pastDate = new Date(baseDate);
         pastDate.setDate(pastDate.getDate() - offset);
-        dates.push(pastDate.toISOString().slice(0, 10));
+        dates.push(getLocalDateString(pastDate));
       }
     }
     
@@ -500,7 +501,7 @@ class SmartDataManager {
   async refreshDate(dateKey, leagueKey = 'all') {
     const cacheKey = `${dateKey}:${leagueKey}`;
     this.cache.delete(cacheKey);
-    if (dateKey === new Date().toISOString().slice(0,10) && leagueKey === 'all') {
+    if (dateKey === getLocalDateString() && leagueKey === 'all') {
       console.log('[SmartDataManager] 🔁 Manual today refresh');
       this.lastTodayFetchTime = new Date();
     }

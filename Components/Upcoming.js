@@ -5,6 +5,7 @@ import { LEAGUES, DEFAULT_TIMEZONE } from '../Config/leagues';
 import { fetchFixturesBulk, mapFixtureToCard, dedupeFixtures } from '../Utils/apiFootball';
 import RemoteLogo from './RemoteLogo';
 import { wp, hp, rs } from '../Utils/responsive';
+import { getLocalDateString } from '../Utils/dateHelpers';
 
 const isUpcomingCard = (c) => {
   const s = c.statusShort;
@@ -57,7 +58,7 @@ const Upcoming = ({ selectedDate, leagueKey = 'all', maxPerLeague = 0, windowDay
   const [err, setErr] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
-  const date = useMemo(() => selectedDate || new Date().toISOString().slice(0, 10), [selectedDate]);
+  const date = useMemo(() => selectedDate || getLocalDateString(), [selectedDate]);
 
   const load = useCallback(async () => {
     try {

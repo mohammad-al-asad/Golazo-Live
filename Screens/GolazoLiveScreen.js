@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import UpcomingOptimized from '../Components/UpcomingOptimized';
 import ScoreOptimized from '../Components/ScoreOptimized';
 import PerformanceMonitor from '../Components/PerformanceMonitor';
+import { getLocalDateString, parseLocalDate } from '../Utils/dateHelpers';
 
 const { width: screenWidth } = Dimensions.get('window');
 const getResponsiveFontSize = (size) => Math.round(size * (screenWidth / 375));
@@ -28,7 +29,7 @@ const GolazoLiveScreen = () => {
   const topInset = insets.top || (Platform.OS === 'android' ? (StatusBar.currentHeight || 0) : 0);
 
   // Calendar state management - exactly like LiveScreen
-  const todayKey = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const todayKey = useMemo(() => getLocalDateString(), []);
   const [selectedDate, setSelectedDate] = useState(todayKey);
   const [activeTab, setActiveTab] = useState('Upcoming');
   const [refreshAll, setRefreshAll] = useState(0);
@@ -38,9 +39,9 @@ const GolazoLiveScreen = () => {
   const WINDOW_RADIUS = 1; // one day each side (center + prev + next)
 
   const shiftDay = useCallback((delta) => {
-    const d = new Date(selectedDate);
+    const d = parseLocalDate(selectedDate);
     d.setDate(d.getDate() + delta);
-    setSelectedDate(d.toISOString().slice(0, 10));
+    setSelectedDate(getLocalDateString(d));
   }, [selectedDate]);
 
   // Header element - stable via useMemo
@@ -64,13 +65,12 @@ const GolazoLiveScreen = () => {
 
   // Date window calculation - exact same logic as LiveScreen
   const dateWindow = useMemo(() => {
-    const baseDate = new Date(selectedDate);
-    const baseTime = baseDate.getTime();
+    const baseDate = parseLocalDate(selectedDate);
     const arr = [];
     for (let i = -WINDOW_RADIUS; i <= WINDOW_RADIUS; i++) {
-      const dayTime = baseTime + (i * 24 * 60 * 60 * 1000);
-      const d = new Date(dayTime);
-      const key = d.toISOString().slice(0, 10);
+      const d = new Date(baseDate);
+      d.setDate(d.getDate() + i);
+      const key = getLocalDateString(d);
       const label = key === todayKey ? 'Today' : `${d.toLocaleDateString([], { weekday: 'short' })} ${d.getDate()}`;
       arr.push({ key, offset: i, label });
     }
