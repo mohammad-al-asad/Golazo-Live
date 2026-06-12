@@ -85,10 +85,10 @@ const Standings = ({ leagueId, season = 2025, standings, teamId }) => {
         <Text style={styles.groupTitle}>{groupName}</Text>
       ) : null}
       <View style={styles.headerRow}>
-        <Text style={[styles.headerCell, { width: 28 }]}>#</Text>
-        <Text style={[styles.headerCell, { flex: 1 }]}>Club</Text>
-        <Text style={styles.headerCell}>P</Text>
-        <Text style={styles.headerCell}>Pts</Text>
+        <Text style={[styles.headerCell, { width: 28, textAlign: 'center' }]}>#</Text>
+        <Text style={[styles.headerCell, { flex: 1, paddingLeft: 8 }]}>Club</Text>
+        <Text style={[styles.headerCell, { width: 35, textAlign: 'center' }]}>P</Text>
+        <Text style={[styles.headerCell, { width: 45, textAlign: 'center' }]}>Pts</Text>
       </View>
       <ScrollView style={{ maxHeight: 280 }}>
         {rows.map((r, index) => {
@@ -115,9 +115,9 @@ const Standings = ({ leagueId, season = 2025, standings, teamId }) => {
               activeOpacity={0.7}
             >
               <Text style={[styles.cell, { width: 28, textAlign: 'center' }]}>{r.rank}</Text>
-              <Text style={[styles.cell, { flex: 1 }]} numberOfLines={1}>{r.team?.name}</Text>
-              <Text style={styles.cell}>{r.all?.played}</Text>
-              <Text style={[styles.cell, { fontWeight: 'bold' }]}>{r.points}</Text>
+              <Text style={[styles.cell, { flex: 1, paddingLeft: 8 }]} numberOfLines={1}>{r.team?.name}</Text>
+              <Text style={[styles.cell, { width: 35, textAlign: 'center' }]}>{r.all?.played}</Text>
+              <Text style={[styles.cell, { width: 45, textAlign: 'center', fontWeight: 'bold' }]}>{r.points}</Text>
             </TouchableOpacity>
           );
         })}
