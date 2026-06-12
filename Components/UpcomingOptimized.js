@@ -6,6 +6,7 @@ import { dedupeFixtures, mapFixtureToCard } from '../Utils/apiFootball';
 import { smartDataManager } from '../Utils/smartDataManager';
 import RemoteLogo from './RemoteLogo';
 import { wp, hp, rs } from '../Utils/responsive';
+import { getLocalDateString } from '../Utils/dateHelpers';
 
 const isUpcomingCard = (c) => {
   const s = c.statusShort;
@@ -98,7 +99,7 @@ const UpcomingOptimized = ({
   const [err, setErr] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   
-  const date = useMemo(() => selectedDate || new Date().toISOString().slice(0, 10), [selectedDate]);
+  const date = useMemo(() => selectedDate || getLocalDateString(), [selectedDate]);
   const prevDateRef = useRef(date);
 
   // Subscribe to smart data manager updates

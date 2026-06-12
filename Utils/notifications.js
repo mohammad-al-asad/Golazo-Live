@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFootballNews } from './newsApi';
 import i18n from '../i18n';
 import { addNotificationToStore } from './notificationStore';
+import { getLocalDateString } from './dateHelpers';
 
 // Keys
 const PERMISSION_KEY = 'notif_permission_asked_v1';
@@ -125,7 +126,7 @@ export async function rescheduleForTomorrowIfNeeded() {
   // Simple daily check: if past midnight and we scheduled for previous day only once, clear flag so next launch schedules again
   const key = 'notif_last_schedule_day_v1';
   const today = new Date();
-  const dayStr = today.toISOString().slice(0,10);
+  const dayStr = getLocalDateString(today);
   const prev = await AsyncStorage.getItem(key);
   if (prev !== dayStr) {
     // New day: allow re-scheduling

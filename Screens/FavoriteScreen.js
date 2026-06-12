@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, StatusBar, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { wp, hp, rs } from '../Utils/responsive';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +14,14 @@ import TeamDetailsScreen from './TeamDetailsScreen';
 import PlayerDetailsScreen from '../Components/PlayerDetailsScreen';
 
 const Stack = createStackNavigator();
+
+const AD_UNIT_ID = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : Platform.select({
+      ios: process.env.EXPO_PUBLIC_IOS_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER,
+      android: process.env.EXPO_PUBLIC_ANDROID_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER,
+      default: TestIds.ADAPTIVE_BANNER,
+    });
 
 // responsive helpers (wp: width %, hp: height %, rs: responsive size)
 
@@ -73,7 +82,17 @@ const FavoriteMainScreen = () => {
           <Text style={styles.logoDot}>●</Text>
           <Text style={styles.logoLive}>{t('Favorite')}</Text>
         </View>
-        
+      </View>
+
+      {/* Banner Ad at the top of the Favorite tabs screen */}
+      <View style={styles.adContainer}>
+        <BannerAd
+          unitId={AD_UNIT_ID}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
       </View>
 
   {/* Tabs Row */}
@@ -191,6 +210,13 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   content: { flex: 1, backgroundColor: '#0F0F0F', paddingHorizontal: wp(4), paddingTop: hp(1.2) },
+  adContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1a1a1a',
+    width: '100%',
+    paddingVertical: 4,
+  },
 });
 
 export default FavoriteScreen;

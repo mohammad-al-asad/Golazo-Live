@@ -6,6 +6,7 @@ import { wp, hp, rs } from '../Utils/responsive';
 import { LEAGUES, DEFAULT_TIMEZONE } from '../Config/leagues';
 import { fetchFixturesBulk, mapFixtureToCard, dedupeFixtures } from '../Utils/apiFootball';
 import RemoteLogo from './RemoteLogo';
+import { getLocalDateString } from '../Utils/dateHelpers';
 
 const isFinished = s => s === 'FT' || s === 'AET' || s === 'PEN' || s === 'AWD' || s === 'WO';
 // Keep live scores too so the tab is not empty on current day
@@ -56,7 +57,7 @@ const Score = ({ selectedDate, leagueKey = 'all', maxPerLeague = 0, ListHeaderCo
   const [err, setErr] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
-  const date = useMemo(() => selectedDate || new Date().toISOString().slice(0, 10), [selectedDate]);
+  const date = useMemo(() => selectedDate || getLocalDateString(), [selectedDate]);
 
   const load = useCallback(async () => {
     try {

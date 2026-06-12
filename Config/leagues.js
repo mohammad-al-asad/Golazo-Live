@@ -31,7 +31,7 @@ export const LEAGUES = [
   { key: 'aut-bundesliga', id: 218, name: 'Austrian Bundesliga',   flag: '🇦🇹', logo: 'https://media.api-sports.io/football/leagues/218.png' },
 
   // World cups
-  { key: 'world-cup',      id: 1,   name: 'FIFA World Cup',        flag: '🏆', category: 'international', season: 2026, logo: 'https://media.api-sports.io/football/leagues/1.png' },
+  { key: 'world-cup',      id: 1,   name: 'FIFA World Cup',        flag: '🏆', category: 'international', season: 2026, logo: 'https://media.api-sports.io/football/leagues/1.png', localLogo: require('../assets/world_cup_logo.png') },
   { key: 'club-world-cup', id: 15,  name: 'FIFA Club World Cup',   flag: '🌍', logo: 'https://media.api-sports.io/football/leagues/15.png' },
 
   // International tournaments
