@@ -2,7 +2,7 @@
   "expo": {
     "name": "Golazo Live",
     "slug": "golazo-live",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "orientation": "portrait",
     "icon": "./assets/splash.png",
     "userInterfaceStyle": "light",
@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "23",
+      "buildNumber": "24",
       "bundleIdentifier": "com.golazo.live",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -29,7 +29,7 @@
       },
       "package": "com.golazo.live",
       "edgeToEdgeEnabled": true,
-      "versionCode": 26,
+      "versionCode": 27,
       "permissions": [
         "POST_NOTIFICATIONS",
         "com.google.android.gms.permission.AD_ID",

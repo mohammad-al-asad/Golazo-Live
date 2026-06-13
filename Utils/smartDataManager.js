@@ -13,7 +13,7 @@ class SmartDataManager {
     
     // AsyncStorage configuration
     this.STORAGE_PREFIX = '@GolazoCache_';
-    this.STORAGE_VERSION = 'v4';
+    this.STORAGE_VERSION = 'v5';
     this.STORAGE_KEYS = {
       CACHE_DATA: `${this.STORAGE_PREFIX}data_${this.STORAGE_VERSION}`,
   CACHE_INDEX: `${this.STORAGE_PREFIX}index_${this.STORAGE_VERSION}`,
