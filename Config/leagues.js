@@ -44,4 +44,8 @@ export const LEAGUES = [
 
 // Keep global seasons for competitions without an explicit season; tournaments above can override this.
 export const SEASONS = [2025, 2024, 2023, 2022]; // fetch 2025 first, then 2024, then 2023, then 2022
-export const DEFAULT_TIMEZONE = 'UTC';
+export const DEFAULT_TIMEZONE =
+  typeof Intl !== 'undefined' && Intl.DateTimeFormat
+    ? Intl.DateTimeFormat().resolvedOptions().timeZone
+    : 'UTC';
+
