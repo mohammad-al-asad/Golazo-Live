@@ -18,6 +18,7 @@ import { showToast } from './Utils/toast';
 import { scheduleTwiceDailyRandomNews, rescheduleForTomorrowIfNeeded, ensureNotificationPermission, initNotificationListeners } from './Utils/notifications';
 import { navigationRef } from './Navigation/navigationRef';
 
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -216,7 +217,7 @@ export default function App() {
       </NavigationContainer>
     </SafeAreaProvider>
   );
-}
+};
 
 const styles = StyleSheet.create({
   loadingContainer: {
