@@ -303,14 +303,8 @@ function LiveTab() {
       data: g.matches,
     }));
 
-    if (list.length >= 2) {
-      list.splice(2, 0, {
-        leagueId: 'ad-section',
-        isAd: true,
-        data: [{ id: 'ad-item' }],
-      });
-    } else if (list.length > 0) {
-      list.push({
+    if (list.length > 0) {
+      list.splice(1, 0, {
         leagueId: 'ad-section',
         isAd: true,
         data: [{ id: 'ad-item' }],
