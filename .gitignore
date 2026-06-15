@@ -36,6 +36,7 @@ ios/
 *.ipa
 
 # Environment variables
+.env
 !.env.example
 
 # IDE files
