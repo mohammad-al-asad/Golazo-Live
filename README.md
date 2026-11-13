@@ -68,7 +68,6 @@
   - [ System Architecture Overview](#system-architecture)
   - [ Competition & Coverage Matrix](#coverage-matrix)
 - [ Project Directory Structure](#project-structure)
-- [ Local Development & Setup](#local-setup)
 - [ Developer Info & Socials](#developer-info)
 - [ License & Proprietary Notice](#license)
 
@@ -78,17 +77,17 @@
 
 ## Interface Preview & Production Metrics
 
-Golazo Live is published worldwide on the **Apple App Store** and **Google Play Store**, serving over **1,000+ football fans** with live match tracking and breaking coverage.
+Experience sub-second football match tracking, tactical pitch visualizations, and comprehensive statistical breakdowns engineered with React Native, Expo SDK 55, and API-Football.
 
-|                             **Apple App Store (iOS)**                              |                           **Google Play Store (Android)**                           |
-| :--------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
-| <img src="./showcase/appleStore.png" alt="Golazo Live on App Store" width="480" /> | <img src="./showcase/playStore.png" alt="Golazo Live on Google Play" width="480" /> |
-|          _Tactical pitch formations, live match minute & league fixtures_          |              _Sub-second score updates across 25+ global competitions_              |
+|                                  **Live Match Center & Tactical Lineup**                                   |                                     **Real-Time Live Scores & Fixtures**                                      |
+| :--------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: |
+| <img src="./showcase/preview/tactical-lineup.jpg" alt="Live Match Center & Tactical Lineup" width="480" /> | <img src="./showcase/preview/live-scores.jpg" alt="Real-Time Live Scores & Match Day Fixtures" width="480" /> |
+|         _Interactive 2D pitch view with starting XI formation (4-3-3), live minute & substitutes_          |            _Multi-league live scores ticker, date selector, live in-play indicators & goal alerts_            |
 
-|                          **Official Brand Identity**                          |                       **Multi-Lingual Parity (EN / ES)**                        |
-| :---------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
-| <img src="./showcase/logo.png" alt="Golazo Live Official Logo" width="260" /> | <img src="./showcase/playStore.png" alt="Multi-Language Support" width="480" /> |
-|            _High-contrast sports UI optimized for mobile viewing_             |            _Full Spanish and English translation powered by i18next_            |
+|                                   **In-Depth Match Statistics & H2H**                                    |                                         **League Standings & Top Scorers**                                         |
+| :------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------: |
+| <img src="./showcase/preview/match-stats.jpg" alt="Detailed Match Statistics & Analytics" width="480" /> | <img src="./showcase/preview/league-standings.jpg" alt="League Standings & Top Scorers Leaderboard" width="480" /> |
+|           _Dual-team possession comparison bars, expected goals (xG), shots on target & form_            |            _Live league tables with qualification zone accents, goal differences & Golden Boot leaders_            |
 
 ---
 
@@ -243,6 +242,7 @@ Golazo-Live/
 │   └── es.json                         # Spanish translation strings
 ├── assets/ · Images/                   # App icon, splash screen & onboarding artwork
 ├── showcase/                           # Store listings and production showcase images
+│   └── preview/                        # High-resolution UI mockup previews (Match Center, Pitch Lineup)
 ├── app.json                            # Expo application configuration manifest
 ├── eas.json                            # EAS Build and EAS Update configuration profiles
 ├── package.json                        # Project dependencies and npm scripts
@@ -252,46 +252,6 @@ Golazo-Live/
 ---
 
 <a id="local-setup"></a>
-
-## Local Development & Setup
-
-### Prerequisites
-
-- **Node.js**: v20 LTS or later
-- **API-Football API Key**: Obtainable from [api-football.com](https://www.api-football.com/)
-- **NewsAPI.ai API Key**: Obtainable from [newsapi.ai](https://newsapi.ai/)
-- **Android Studio & SDK** (JDK 17) or **Xcode** (macOS only)
-
-### Installation & Run
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/mohammad-al-asad/Golazo-Live.git
-   cd Golazo-Live
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables:**
-   Create a `.env` file in the root directory:
-
-   ```env
-   EXPO_PUBLIC_FOOTBALL_API_KEY=your_api_football_key
-   EXPO_PUBLIC_NEWS_API_KEY=your_newsapi_ai_key
-   ```
-
-4. **Launch Application:**
-   ```bash
-   npx expo run:android         # Launch on Android device / emulator
-   npx expo run:ios             # Launch on iOS simulator (macOS only)
-   ```
-
----
 
 <a id="developer-info"></a>
 
@@ -313,7 +273,7 @@ Golazo Live is architected, developed, and maintained by experienced mobile engi
 
 <a id="license"></a>
 
-## 📄 License & Proprietary Notice
+## License & Proprietary Notice
 
 Copyright © 2026 Futbol Mundial. All rights reserved.
 
